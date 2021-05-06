@@ -2,7 +2,7 @@
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 metadata:
-  name: cnvrg-core-vv2 # This should be the name of the existing cluster.
+  name: cnvrg-core # This should be the name of the existing cluster.
   region: us-east-1 # This should be the Amazon region the cluster is in.
 nodeGroups:
   - name: cpu-pool # Customizable. The name of the node pool.
