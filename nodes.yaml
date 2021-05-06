@@ -1,0 +1,39 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: cnvrg-core-vv2 # This should be the name of the existing cluster.
+  region: us-east-1 # This should be the Amazon region the cluster is in.
+nodeGroups:
+  - name: cpu-pool # Customizable. The name of the node pool.
+    instanceType: m5.xlarge # Customizable. The instance type for the node pool.
+    volumeSize: 100 # Required. The disk size for the nodes.
+    minSize: 1 # Customizable. The minimum amount of nodes to auto scale down to.
+    maxSize: 5 # Customizable. The maximum amount of nodes to auto scale up to.
+    desiredCapacity: 4 # Customizable. The initial amount of nodes to have live.
+    privateNetworking: true # Required.
+    iam:
+      withAddonPolicies:
+        autoScaler: true # Required.
+        imageBuilder: true # Required.
+    tags:
+      k8s.io/cluster-autoscaler/enabled: 'true' # Required.
+  - name: gpu-pool-2 # Customizable. The name of the node pool.
+    instanceType: g4dn.xlarge # Customizable. The instance type for the node pool.
+    volumeSize: 100 # Required. The disk size for the nodes.
+    minSize: 1 # Customizable. The minimum amount of nodes to auto scale down to.
+    maxSize: 5 # Customizable. The maximum amount of nodes to auto scale up to.
+    desiredCapacity: 1 # Customizable. The initial amount of nodes to have live.
+    iam:
+      withAddonPolicies:
+        autoScaler: true # Required.
+        imageBuilder: true # Required.
+    privateNetworking: true # Required.
+    taints:
+      nvidia.com/gpu: "present:NoSchedule" # Required.
+    labels:
+      accelerator: 'nvidia' # Required.
+    tags:
+      k8s.io/cluster-autoscaler/enabled: 'true' # Required.
+      k8s.io/cluster-autoscaler/node-template/taint/nvidia.com/gpu: 'present:NoSchedule' # Required.
+      k8s.io/cluster-autoscaler/node-template/label/accelerator: 'nvidia' # Required.
